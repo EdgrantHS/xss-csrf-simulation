@@ -1,0 +1,18 @@
+.blogPost {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.blogPostTitle {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.blogPostContent {
+    font-size: 1rem;
+    color: #555;
+}

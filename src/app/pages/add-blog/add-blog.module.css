@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9;
+  padding: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+}
+
+.title {
+  font-size: 2rem;         
+  font-weight: bold;      
+  text-align: center;
+  margin-bottom: 20px;     
+}
+
+.input, .textarea {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.textarea {
+  height: 500px;
+  resize: vertical;
+}
+
+.button {
+  background-color: #0070f3;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #005bb5;
+}

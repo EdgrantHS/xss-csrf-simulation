@@ -1,0 +1,52 @@
+.container {
+  padding: 20px;
+  background-color: #f4f4f9;
+}
+
+.blogs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.addButton {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addButton:hover {
+  background-color: #005bb5;
+}
+
+.logoutButton {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-bottom: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #d32f2f;
+}
