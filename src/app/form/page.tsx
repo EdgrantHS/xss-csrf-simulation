@@ -1,5 +1,5 @@
 
-"use client"; // Enables client-side interactivity
+"use client"; 
 
 import { useState } from "react";
 import axios from "axios";

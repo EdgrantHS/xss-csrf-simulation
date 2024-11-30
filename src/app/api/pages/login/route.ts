@@ -28,7 +28,20 @@ export async function POST(request: Request) {
             );
         }
 
-        return NextResponse.json({ success: true });
+        // Generate session token (This is just an example, you can modify it based on your requirement)
+        const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        // Save session to the database
+        const sessionCollection = db.collection("Session");
+        await sessionCollection.insertOne({ username, sessionToken });
+
+        // Return sessionToken and username in the response
+        return NextResponse.json({
+            success: true,
+            sessionToken,
+            username,
+        });
+
     } catch (error) {
         console.error(error);
         return NextResponse.json(

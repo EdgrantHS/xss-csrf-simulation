@@ -1,4 +1,4 @@
-'use client'; 
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,11 +10,31 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (username && email && password) {
-      alert('Registration successful!');
-      router.push('/pages/login'); 
+      try {
+        const response = await fetch('/api/pages/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, email, password }), 
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Registration successful!');
+          router.push('/pages/login'); 
+        } else {
+          alert(data.error || 'Registration failed');
+        }
+      } catch (error) {
+        console.error('Error during registration:', error);
+        alert('An error occurred while registering. Please try again.');
+      }
     } else {
       alert('Please fill in all fields');
     }

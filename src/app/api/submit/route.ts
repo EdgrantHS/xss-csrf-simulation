@@ -3,7 +3,7 @@ import clientPromise from "@/lib/mongodb";
 
 export async function POST(request: Request) {
     try {
-        const { title, content } = await request.json(); // Parse the body
+        const { title, content } = await request.json(); 
         if (!title || !content) {
             return NextResponse.json(
                 { error: "Title and content are required" },

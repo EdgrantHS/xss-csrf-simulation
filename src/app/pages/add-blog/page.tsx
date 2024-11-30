@@ -1,4 +1,5 @@
-'use client'; 
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './add-blog.module.css';
@@ -8,15 +9,26 @@ const AddBlog = () => {
   const [content, setContent] = useState('');
   const router = useRouter();
 
-  const handleAddBlog = (e: React.FormEvent) => {
+  const handleAddBlog = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (title && content) {
-      const newBlog = { id: Date.now(), title, content };
-      const existingBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-      existingBlogs.push(newBlog);
-      localStorage.setItem('blogs', JSON.stringify(existingBlogs));  
-      alert('Blog added successfully!');
-      router.push('/pages/index'); 
+      const response = await fetch('/api/pages/blog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, body: content }),  
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Blog added successfully!');
+        router.push('/pages/index');  
+      } else {
+        alert(`Error: ${data.error}`);
+      }
     } else {
       alert('Please fill in both fields');
     }
