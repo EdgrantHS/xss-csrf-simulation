@@ -56,8 +56,12 @@ export async function GET(request: Request) {
         }
 
         return NextResponse.json(
-            // Return all session
-            await collection.find().toArray()
+            // // Return all session
+            // await collection.find().toArray()
+
+            //return error if session is not found
+            { error: "Session is Required" },
+            { status: 400 }
         );
     } catch (error) {
         console.error(error);

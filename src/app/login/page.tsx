@@ -1,7 +1,8 @@
 'use client'
 
+import axios from 'axios'
 import { redirect } from 'next/navigation'
-import { FormEvent } from 'react'
+import { FormEvent, useEffect } from 'react'
 
 export default function LoginPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

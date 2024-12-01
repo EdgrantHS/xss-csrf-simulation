@@ -50,3 +50,22 @@ export async function POST(request: Request) {
         );
     }
 }
+
+//get all users
+export async function GET() {
+    try {
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("Users");
+
+        const users = await collection.find().toArray();
+
+        return NextResponse.json(users);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: "Failed to get users" },
+            { status: 500 }
+        );
+    }
+}

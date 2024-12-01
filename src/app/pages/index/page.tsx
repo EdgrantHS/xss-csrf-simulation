@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie'; 
 import BlogPost from '../../components/BlogPost';
 import styles from './index.module.css';
+import { set } from 'mongoose';
 
 const IndexPage = () => {
   const [blogs, setBlogs] = useState<any[]>([]);  
   const [loading, setLoading] = useState<boolean>(true);  
   const [error, setError] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
@@ -23,17 +25,20 @@ const IndexPage = () => {
       }
   
       try {
-        const response = await fetch(`http://localhost:3000/api/pages/session`);
+        const response = await fetch(`http://localhost:3000/api/pages/session?session=${sessionToken}`);
         const data = await response.json();
   
         // Akses sessionToken dari data yang diterima
-        const sessionTokenFromAPI = data[0]?.sessionToken; // Mengambil sessionToken dari objek pertama dalam array
+        console.log("Data from API:", data);
+        const sessionTokenFromAPI = data.username
+        setUsername(sessionTokenFromAPI);
   
         console.log("Session Token from API:", sessionTokenFromAPI);
   
         if (response.ok && sessionTokenFromAPI) {
           fetchBlogs();  
         } else {
+          console.log(sessionTokenFromAPI);
           console.log("Invalid session. Redirecting to login.");
           router.push('/pages/login'); 
         }
@@ -70,14 +75,19 @@ const IndexPage = () => {
   };
 
   const handleLogout = () => {
-    Cookies.remove('session');  
+    // Clear all cookies
+    Cookies.remove('session', {path: '/'});
+    Cookies.remove('session', {path: '/pages/'});
+    Cookies.remove('username', {path: '/pages/'});
+
+    console.log("Logging out...");
     router.push('/pages/login');  
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Welcome to the Blog</h1>
-      
+      <h1 className={styles.title}>Welcome to the Blog {username}</h1>
+
       <button onClick={handleLogout} className={styles.logoutButton}>
         Logout
       </button>

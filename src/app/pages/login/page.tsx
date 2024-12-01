@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie'; 
 import styles from './login.module.css';
+import axios from 'axios';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -37,6 +38,29 @@ const Login = () => {
       alert('Please fill in both fields');
     }
   };
+
+  // Cek apakah session token sudah ada
+  useEffect(() => {
+    // Mendapatkan session token dari cookies
+    const session = Cookies.get('session');
+
+    //Mengecek apakah session tersebut legit
+    // Route:http://localhost:3000/api/pages/session?session=55gpoo1x25xrznr2ai83rs
+    axios.get('http://localhost:3000/api/pages/session', {
+      params: {
+        session: session,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.username) {
+        router.push('/pages/index');
+      }
+    })
+    .catch((error) => {
+      console.table(error);
+    });
+  }, []);
 
   return (
     <div className={styles.container}>
