@@ -26,7 +26,7 @@ const IndexPage = () => {
       }
   
       try {
-        const response = await fetch(`http://localhost:3000/api/pages/session?session=${sessionToken}`);
+        const response = await fetch(`/api/pages/session?session=${sessionToken}`);
         const data = await response.json();
   
         // Akses sessionToken dari data yang diterima

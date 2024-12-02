@@ -14,7 +14,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password) {
-      const response = await fetch('http://localhost:3000/api/pages/login', {
+      const response = await fetch('/api/pages/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +45,8 @@ const Login = () => {
     const session = Cookies.get('session');
 
     //Mengecek apakah session tersebut legit
-    // Route:http://localhost:3000/api/pages/session?session=55gpoo1x25xrznr2ai83rs
-    axios.get('http://localhost:3000/api/pages/session', {
+    // Route:/api/pages/session?session=55gpoo1x25xrznr2ai83rs
+    axios.get('/api/pages/session', {
       params: {
         session: session,
       },

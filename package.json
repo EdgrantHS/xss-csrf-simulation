@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
+    "dompurify": "^3.2.2",
     "js-cookie": "^3.0.5",
     "kemjar-prak": "file:",
     "mongodb": "^6.11.0",
@@ -32,4 +33,3 @@
     "typescript": "^5"
   }
 }
-
