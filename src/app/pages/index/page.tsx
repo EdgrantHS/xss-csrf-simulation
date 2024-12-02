@@ -81,6 +81,8 @@ const IndexPage = () => {
     Cookies.remove('session', {path: '/'});
     Cookies.remove('session', {path: '/pages/'});
     Cookies.remove('username', {path: '/pages/'});
+    Cookies.remove('session', {path: '/secure/'});
+    Cookies.remove('username', {path: '/secure/'});
 
     console.log("Logging out...");
     router.push('/pages/login');  

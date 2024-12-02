@@ -30,7 +30,7 @@ const BlogPostSecure = ({ title, content }: { title: string, content: string }) 
       <h2 className={styles.blogPostTitle}>{title}</h2>
 
       {/* render unsafe html  */}
-      <p className={styles.blogPostContent}>{content}</p>
+      {/* <p className={styles.blogPostContent}>{content}</p> */}
       <div
         className={styles.blogPostContent}
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
