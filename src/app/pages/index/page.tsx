@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie'; 
 import BlogPost from '../../components/BlogPost';
+import BlogPostAdmin from '../../components/BlogPostAdmin';
 import styles from './index.module.css';
 import { set } from 'mongoose';
 
@@ -94,15 +95,23 @@ const IndexPage = () => {
 
       <div className={styles.blogs}>
         {loading ? (
-          <p>Loading blogs...</p>  
+          <p>Loading blogs...</p>
         ) : error ? (
-          <p>{error}</p> 
+          <p>{error}</p>
         ) : blogs.length === 0 ? (
-          <p>No blogs added yet!</p>  
+          <p>No blogs added yet!</p>
         ) : (
-          blogs.map((blog: any) => (
-            <BlogPost key={blog._id} title={blog.title} content={blog.body} />
-          ))
+          blogs.map((blog: any) =>
+            username === "admin" ? (
+              <BlogPostAdmin
+                key={blog._id}
+                title={blog.title}
+                content={blog.body}
+              />
+            ) : (
+              <BlogPost key={blog._id} title={blog.title} content={blog.body} />
+            )
+          )
         )}
       </div>
       <button onClick={handleAddBlog} className={styles.addButton}>
