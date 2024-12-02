@@ -1,24 +1,24 @@
 'use client';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import styles from './BlogPost.module.css';
-import DOMPurify from 'dompurify';
+// import DOMPurify from 'dompurify';
 
 const BlogPost = ({ title, content }: { title: string, content: string }) => {
 
-  const [sanitizedContent, setSanitizedContent] = useState<string>('');
+  // const [sanitizedContent, setSanitizedContent] = useState<string>('');
 
-  const allowedTags = ['b', 'i', 'em', 'strong'];
+  // const allowedTags = ['b', 'i', 'em', 'strong'];
 
-  const sanitizeHtml = (html: string) => {
-    return DOMPurify.sanitize(html, {
-      ALLOWED_TAGS: allowedTags,
-    });
-  };
+  // const sanitizeHtml = (html: string) => {
+  //   return DOMPurify.sanitize(html, {
+  //     ALLOWED_TAGS: allowedTags,
+  //   });
+  // };
 
 
-  useEffect(() => {
-    setSanitizedContent(sanitizeHtml(content));
-  }, [content]);
+  // useEffect(() => {
+  //   setSanitizedContent(sanitizeHtml(content));
+  // }, [content]);
 
   // const blog=`
   //  <p>This is some blog text. There could be <b>bold</b> elements as well as <i>italic</i> elements here! <p>

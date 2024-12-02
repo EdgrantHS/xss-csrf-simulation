@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie'; 
 import BlogPost from '../../components/BlogPost';
 import BlogPostAdmin from '../../components/BlogPostAdmin';
 import styles from './index.module.css';
-import { set } from 'mongoose';
+// import { set } from 'mongoose';
 
 const IndexPage = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);  
+  const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);  
   const [error, setError] = useState<string>('');
   const [username, setUsername] = useState<string>('');
@@ -64,8 +64,9 @@ const IndexPage = () => {
       } else {
         setError(data.error || 'Failed to load blogs');  
       }
-    } catch (err) {
+    } catch (error: any) {
       setError('Failed to load blogs'); 
+      console.error(error);
     } finally {
       setLoading(false); 
     }
