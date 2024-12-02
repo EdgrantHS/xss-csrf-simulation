@@ -3,19 +3,24 @@ import { useEffect, useState } from 'react';
 import styles from './BlogPost.module.css';
 import DOMPurify from 'dompurify';
 
-const BlogPostAdminSecure = ({ title, content }: { title: string, content: string }) => {
+const BlogPostAdminSecure = ({
+  title,
+  content,
+  session,
+}: {
+  title: string;
+  content: string;
+  session: string;
+}) => {
+  const [sanitizedContent, setSanitizedContent] = useState<string>("");
 
-
-  const [sanitizedContent, setSanitizedContent] = useState<string>('');
-
-  const allowedTags = ['b', 'i', 'em', 'strong'];
+  const allowedTags = ["b", "i", "em", "strong"];
 
   const sanitizeHtml = (html: string) => {
     return DOMPurify.sanitize(html, {
       ALLOWED_TAGS: allowedTags,
     });
   };
-
 
   useEffect(() => {
     setSanitizedContent(sanitizeHtml(content));
@@ -43,14 +48,36 @@ const BlogPostAdminSecure = ({ title, content }: { title: string, content: strin
       <button
         className="bg-red-500 text-white p-2 mx-auto rounded"
         onClick={() => {
-          fetch(`/api/pages/blog`, {
-            method: "DELETE",
+          // fetch(`/api/secure/blog?session=${session}`, {
+          //   method: "DELETE",
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //   },
+          //   body: JSON.stringify({ title }),
+          // }).then(() => {
+          //   window.location.reload();
+          // });
+
+          //get session, if not 200, alert
+          fetch(`/api/secure/session?session=${session}`, {
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ title }),
-          }).then(() => {
-            window.location.reload();
+          }).then((response) => {
+            if (response.status !== 200) {
+              alert("You are not authorized to delete this post.");
+            } else {
+              fetch(`/api/secure/blog?session=${session}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ title }),
+              }).then(() => {
+                window.location.reload();
+              });
+            }
           });
         }}
       >

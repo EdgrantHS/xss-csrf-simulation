@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie'; 
-import BlogPostSecure from '../../components/BlogPostSecure';
-import BlogPostAdminSecure from '../../components/BlogPostAdminSecure';
 import styles from './index.module.css';
+import BlogPostAdminSecure from '@/app/components/BlogPostAdminSecure';
+import BlogPostSecure from '@/app/components/BlogPostSecure';
 // import { set } from 'mongoose';
 
 const IndexPage = () => {
@@ -13,6 +13,7 @@ const IndexPage = () => {
   const [loading, setLoading] = useState<boolean>(true);  
   const [error, setError] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [session, setSession] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
@@ -33,6 +34,7 @@ const IndexPage = () => {
         console.log("Data from API:", data);
         const sessionTokenFromAPI = data.username
         setUsername(sessionTokenFromAPI);
+        setSession(sessionToken);
   
         console.log("Session Token from API:", sessionTokenFromAPI);
   
@@ -108,13 +110,10 @@ const IndexPage = () => {
                 key={blog._id}
                 title={blog.title}
                 content={blog.body}
+                session={session}
               />
             ) : (
-              <BlogPostSecure
-                key={blog._id}
-                title={blog.title}
-                content={blog.body}
-              />
+              <BlogPostSecure key={blog._id} title={blog.title} content={blog.body} />
             )
           )
         )}

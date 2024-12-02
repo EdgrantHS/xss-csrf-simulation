@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-// const allowedOrigins = ["https://kemjar34.vercel.app"];
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["https://kemjar34.vercel.app"];
+// const allowedOrigins = ["http://localhost:3000"];
 
 export function corsMiddleware(req: NextApiRequest, res: NextApiResponse, next: () => void) {
   const origin = req.headers.origin || "";

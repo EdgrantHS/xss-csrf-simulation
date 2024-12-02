@@ -1,179 +1,179 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-// Reusable CORS middleware
-async function handleWithCors(req: Request, handler: (req: Request) => Promise<NextResponse>) {
-    const origin = req.headers.get("origin");
-    const allowedOrigins = ["https://kemjar34.vercel.app"];
-    // const allowedOrigins = ["http://localhost:3000"];
+export async function POST(request: Request) {
+    // add new blog
+    try {
+        const { title, body } = await request.json(); // Parse the body
+        if (!title || !body) {
+            return NextResponse.json(
+                { error: "Title and Body is Required" },
+                { status: 400 }
+            );
+        }
 
-    if (!origin || !allowedOrigins.includes(origin)) {
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("Blogs");
+
+        // Mencari apakah blog dengan judul yang sama sudah ada
+        const checkTitle = await collection.findOne({ title });
+
+        // Jika sudah ada blog dengan judul yang sama
+        if (checkTitle) {
+            return NextResponse.json(
+                { error: "Blog already exists" },
+                { status: 400 }
+            );
+        }
+
+        // Menambahkan blog baru ke database
+        await collection.insertOne({ title, body });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error(error);
         return NextResponse.json(
-            { error: "CORS policy: Access denied" },
-            { status: 403 }
+            { error: "Failed to Create new Blog" },
+            { status: 500 }
         );
     }
-
-    if (req.method === "OPTIONS") {
-        return new NextResponse(null, {
-            status: 204,
-            headers: {
-                "Access-Control-Allow-Origin": origin,
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            },
-        });
-    }
-
-    return handler(req);
 }
 
-// POST handler - Add new blog
-export async function POST(request: Request) {
-    return handleWithCors(request, async (req) => {
-        try {
-            const { title, body } = await req.json();
-            if (!title || !body) {
-                return NextResponse.json(
-                    { error: "Title and Body are required" },
-                    { status: 400 }
-                );
-            }
-
-            const client = await clientPromise;
-            const db = client.db("Kemjar");
-            const collection = db.collection("Blogs");
-
-            const checkTitle = await collection.findOne({ title });
-            if (checkTitle) {
-                return NextResponse.json(
-                    { error: "Blog already exists" },
-                    { status: 400 }
-                );
-            }
-
-            await collection.insertOne({ title, body });
-
-            return NextResponse.json({ success: true });
-        } catch (error) {
-            console.error(error);
-            return NextResponse.json(
-                { error: "Failed to create new blog" },
-                { status: 500 }
-            );
-        }
-    });
-}
-
-// GET handler - Retrieve blogs
 export async function GET(request: Request) {
-    return handleWithCors(request, async (req) => {
-        try {
-            const client = await clientPromise;
-            const db = client.db("Kemjar");
-            const collection = db.collection("Blogs");
+    try {
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("Blogs");
 
-            const { searchParams } = new URL(req.url);
-            const title = searchParams.get("title");
+        // Parse query parameters from the URL
+        const { searchParams } = new URL(request.url);
+        const title = searchParams.get("title"); // Extract 'title' query parameter
 
-            if (title) {
-                const blog = await collection.findOne({ title });
-                if (!blog) {
-                    return NextResponse.json(
-                        { error: "Blog not found" },
-                        { status: 404 }
-                    );
-                }
+        if (title) {
+            // Search for a specific blog by title
+            const blog = await collection.findOne({ title });
 
-                return NextResponse.json({ success: true, blog });
+            if (!blog) {
+                return NextResponse.json(
+                    { error: "Blog not found" },
+                    { status: 404 }
+                );
             }
 
-            const blogs = await collection.find({}).sort({ _id: -1 }).toArray();
-            return NextResponse.json({
-                success: true,
-                count: blogs.length,
-                blogs,
-            });
-        } catch (error) {
-            console.error(error);
-            return NextResponse.json(
-                { error: "Failed to retrieve blogs" },
-                { status: 500 }
-            );
+            return NextResponse.json({ success: true, blog });
         }
-    });
+
+        // If no specific title is provided, return all blogs
+        const blogs = await collection.find({}).sort({ _id: -1 }).toArray();
+
+        return NextResponse.json({
+            success: true,
+            count: blogs.length,
+            blogs,
+        });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: "Failed to retrieve blogs" },
+            { status: 500 }
+        );
+    }
 }
 
-// PUT handler - Update blog
 export async function PUT(request: Request) {
-    return handleWithCors(request, async (req) => {
-        try {
-            const { title, body } = await req.json();
-            if (!title || !body) {
-                return NextResponse.json(
-                    { error: "Title and Body are required" },
-                    { status: 400 }
-                );
-            }
-
-            const client = await clientPromise;
-            const db = client.db("Kemjar");
-            const collection = db.collection("Blogs");
-
-            const checkTitle = await collection.findOne({ title });
-            if (!checkTitle) {
-                return NextResponse.json(
-                    { error: "Blog not found" },
-                    { status: 404 }
-                );
-            }
-
-            await collection.updateOne({ title }, { $set: { body } });
-
-            return NextResponse.json({ success: true });
-        } catch (error) {
-            console.error(error);
+    try {
+        const { title, body } = await request.json(); // Parse the body
+        if (!title || !body) {
             return NextResponse.json(
-                { error: "Failed to update blog" },
-                { status: 500 }
+                { error: "Title and Body is Required" },
+                { status: 400 }
             );
         }
-    });
+
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("Blogs");
+
+        // Mencari apakah blog dengan judul yang sama sudah ada
+        const checkTitle = await collection.findOne({ title });
+
+        // Jika tidak ada blog dengan judul yang sama
+        if (!checkTitle) {
+            return NextResponse.json(
+                { error: "Blog not found" },
+                { status: 404 }
+            );
+        }
+
+        // Update blog
+        await collection.updateOne({ title }, { $set: { body } });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: "Failed to update blog" },
+            { status: 500 }
+        );
+    }
 }
 
-// DELETE handler - Delete blog
 export async function DELETE(request: Request) {
-    return handleWithCors(request, async (req) => {
-        try {
-            const { title } = await req.json();
-            if (!title) {
-                return NextResponse.json(
-                    { error: "Title is required" },
-                    { status: 400 }
-                );
-            }
+    try {
+        // get parameter from URL
+        const { searchParams } = new URL(request.url);
 
-            const client = await clientPromise;
-            const db = client.db("Kemjar");
-            const collection = db.collection("Blogs");
+        //if searchParams has session
+        const session = searchParams.get("session");
 
-            const checkTitle = await collection.findOne({ title });
-            if (!checkTitle) {
-                return NextResponse.json(
-                    { error: "Blog not found" },
-                    { status: 404 }
-                );
-            }
+        // get usernmae from session from /api/secure/session
+        console.log("AAAAAAAA "+session);
+        // const sessionResponse = await fetch("http://localhost:3000/api/secure/session?session=" + session);
+        const sessionResponse = await fetch("https://kemjar34.vercel.app/api/secure/session?session=" + session);
+        const sessionData = await sessionResponse.json();
+        const username = sessionData.username;
 
-            await collection.deleteOne({ title });
-
-            return NextResponse.json({ success: true });
-        } catch (error) {
-            console.error(error);
+        //if username is admin, proceed to delete blog
+        if (username !== "admin") {
             return NextResponse.json(
-                { error: "Failed to delete blog" },
-                { status: 500 }
+                { error: "Unauthorized" },
+                { status: 401 }
             );
         }
-    });
+
+        const { title } = await request.json(); // Parse the body
+        if (!title) {
+            return NextResponse.json(
+                { error: "Title is Required" },
+                { status: 400 }
+            );
+        }
+
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("Blogs");
+
+        // Mencari apakah blog dengan judul yang sama sudah ada
+        const checkTitle = await collection.findOne({ title });
+
+        // Jika tidak ada blog dengan judul yang sama
+        if (!checkTitle) {
+            return NextResponse.json(
+                { error: "Blog not found" },
+                { status: 404 }
+            );
+        }
+
+        // Delete blog
+        await collection.deleteOne({ title });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: "Failed to delete blog" },
+            { status: 500 }
+        );
+    }
 }
