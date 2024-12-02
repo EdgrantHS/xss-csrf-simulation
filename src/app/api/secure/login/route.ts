@@ -4,8 +4,8 @@ import clientPromise from "@/lib/mongodb";
 // Middleware wrapper
 async function handleWithCors(req: Request, handler: (req: Request) => Promise<NextResponse>) {
     const origin = req.headers.get("origin");
-    // const allowedOrigins = ["https://kemjar34.vercel.app"];
-    const allowedOrigins = ["http://localhost:3000"];
+    const allowedOrigins = ["https://kemjar34.vercel.app"];
+    // const allowedOrigins = ["http://localhost:3000"];
 
     if (!origin || !allowedOrigins.includes(origin)) {
         return NextResponse.json(
