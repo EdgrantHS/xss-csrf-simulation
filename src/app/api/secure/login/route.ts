@@ -1,71 +1,97 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export async function POST(request: Request) {
-    try {
-        const { username, password } = await request.json(); // Parse the body
-        if (!username || !password) {
-            return NextResponse.json(
-                { error: "Username and Password is Required" },
-                { status: 400 }
-            );
-        }
+// Middleware wrapper
+async function handleWithCors(req: Request, handler: (req: Request) => Promise<NextResponse>) {
+    const origin = req.headers.get("origin");
+    // const allowedOrigins = ["https://kemjar34.vercel.app"];
+    const allowedOrigins = ["http://localhost:3000"];
 
-        //TODO: Hash the password before querying the database
-
-        const client = await clientPromise;
-        const db = client.db("Kemjar");
-        const collection = db.collection("Users");
-
-        // Mendapat user dengan username yang sesuai
-        const user = await collection.findOne({ username });
-
-        // Mengecek apakah password yang dimasukkan sesuai
-        if (!user || user.password !== password) {
-            return NextResponse.json(
-                { error: "Invalid Username or Password" },
-                { status: 401 }
-            );
-        }
-
-        // Generate session token (This is just an example, you can modify it based on your requirement)
-        const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-        // Save session to the database
-        const sessionCollection = db.collection("Session");
-        await sessionCollection.insertOne({ username, sessionToken });
-
-        // Return sessionToken and username in the response
-        return NextResponse.json({
-            success: true,
-            sessionToken,
-            username,
-        });
-
-    } catch (error) {
-        console.error(error);
+    if (!origin || !allowedOrigins.includes(origin)) {
         return NextResponse.json(
-            { error: "Failed to Login" },
-            { status: 500 }
+            { error: "CORS policy: Access denied" },
+            { status: 403 }
         );
     }
+
+    // Preflight (OPTIONS) requests
+    if (req.method === "OPTIONS") {
+        return new NextResponse(null, {
+            status: 204,
+            headers: {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            },
+        });
+    }
+
+    // Run the actual handler
+    return handler(req);
 }
 
-//get all users
-export async function GET() {
-    try {
-        const client = await clientPromise;
-        const db = client.db("Kemjar");
-        const collection = db.collection("Users");
+// POST handler
+export async function POST(request: Request) {
+    return handleWithCors(request, async (req) => {
+        try {
+            const { username, password } = await req.json();
+            if (!username || !password) {
+                return NextResponse.json(
+                    { error: "Username and Password is Required" },
+                    { status: 400 }
+                );
+            }
 
-        const users = await collection.find().toArray();
+            const client = await clientPromise;
+            const db = client.db("Kemjar");
+            const collection = db.collection("Users");
 
-        return NextResponse.json(users);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            { error: "Failed to get users" },
-            { status: 500 }
-        );
-    }
+            const user = await collection.findOne({ username });
+            if (!user || user.password !== password) {
+                return NextResponse.json(
+                    { error: "Invalid Username or Password" },
+                    { status: 401 }
+                );
+            }
+
+            const sessionToken =
+                Math.random().toString(36).substring(2, 15) +
+                Math.random().toString(36).substring(2, 15);
+
+            const sessionCollection = db.collection("Session");
+            await sessionCollection.insertOne({ username, sessionToken });
+
+            return NextResponse.json({
+                success: true,
+                sessionToken,
+                username,
+            });
+        } catch (error) {
+            console.error(error);
+            return NextResponse.json(
+                { error: "Failed to Login" },
+                { status: 500 }
+            );
+        }
+    });
+}
+
+// GET handler
+export async function GET(request: Request) {
+    return handleWithCors(request, async () => {
+        try {
+            const client = await clientPromise;
+            const db = client.db("Kemjar");
+            const collection = db.collection("Users");
+
+            const users = await collection.find().toArray();
+            return NextResponse.json(users);
+        } catch (error) {
+            console.error(error);
+            return NextResponse.json(
+                { error: "Failed to get users" },
+                { status: 500 }
+            );
+        }
+    });
 }
