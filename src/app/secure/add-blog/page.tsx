@@ -13,7 +13,7 @@ const AddBlog = () => {
     e.preventDefault();
 
     if (title && content) {
-      const response = await fetch('/api/pages/blog', {
+      const response = await fetch('/api/pages/secure/blog', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -13,7 +13,7 @@ const AddBlog = () => {
     e.preventDefault();
 
     if (title && content) {
-      const response = await fetch('/api/pages/blog', {
+      const response = await fetch('/api/secure/blog', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ const AddBlog = () => {
 
       if (data.success) {
         alert('Blog added successfully!');
-        router.push('/pages/index');  
+        router.push('/secure/index');  
       } else {
         alert(`Error: ${data.error}`);
       }

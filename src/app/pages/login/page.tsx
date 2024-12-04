@@ -23,29 +23,44 @@ const Login = () => {
       });
 
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (data.success) {
-        console.log('Session Token:', data.sessionToken); 
-        Cookies.set('session', data.sessionToken, { expires: 7, path: '/pages/', sameSite: 'none', secure: true });
-        Cookies.set('username', username, { expires: 7, path: '/pages/' });
+        console.log('Session Token:', data.sessionToken);
+
+        // Set session and username cookies after successful login
+        Cookies.set('session', data.sessionToken, { expires: 7, path: '/', sameSite: 'none', secure: true });
+        Cookies.set('username', username, { expires: 7, path: '/' });
+
+        /*// Send a request to generate the CSRF token
+        const csrfResponse = await fetch('/api/secure/csrf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }), // Send username in the request body
+        });
+
+        if (csrfResponse.ok) {
+          console.log('CSRF token generated successfully');
+        } else {
+          console.error('Failed to generate CSRF token');
+        }*/
+
         alert('Login Successful');
-        router.push('/pages/index'); 
+        router.push('/pages/index');
       } else {
         alert(data.error || 'Login failed');
       }
-      
     } else {
       alert('Please fill in both fields');
     }
   };
 
-  // Cek apakah session token sudah ada
+  // Check if session token already exists
   useEffect(() => {
-    // Mendapatkan session token dari cookies
     const session = Cookies.get('session');
 
-    //Mengecek apakah session tersebut legit
-    // Route:/api/pages/session?session=55gpoo1x25xrznr2ai83rs
+    // Check if session is legit
     axios.get('/api/pages/session', {
       params: {
         session: session,
@@ -58,7 +73,7 @@ const Login = () => {
       }
     })
     .catch((error) => {
-      console.table(error);
+      console.error(error);
     });
   }, []);
 

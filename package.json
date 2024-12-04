@@ -11,6 +11,8 @@
   "dependencies": {
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
+    "cookie": "^1.0.2",
+    "csrf": "^3.1.0",
     "dompurify": "^3.2.2",
     "js-cookie": "^3.0.5",
     "kemjar-prak": "file:",
@@ -18,7 +20,9 @@
     "mongoose": "^8.8.3",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "uuid": "^11.0.3",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

@@ -26,7 +26,7 @@ const Login = () => {
       console.log(data)
       if (data.success) {
         console.log('Session Token:', data.sessionToken); 
-        Cookies.set('session', data.sessionToken, { expires: 7, path: '/secure/', sameSite: 'none', secure: true });
+        Cookies.set('session', data.sessionToken, { expires: 7, path: '/secure/', httpOnly: true, sameSite: 'Strict', secure: true });
         Cookies.set('username', username, { expires: 7, path: '/secure/' });
         alert('Login Successful');
         router.push('/secure/index'); 
