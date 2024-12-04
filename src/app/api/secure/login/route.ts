@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import crypto from "crypto";
 
 export async function POST(request: Request) {
   try {
@@ -16,6 +17,8 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db("Kemjar");
     const collection = db.collection("Users");
+
+    let csrfToken = "";
 
     // Mendapat user dengan username yang sesuai
     const user = await collection.findOne({ username });
@@ -37,10 +40,17 @@ export async function POST(request: Request) {
     const sessionCollection = db.collection("Session");
     await sessionCollection.insertOne({ username, sessionToken });
 
+    if (username == "admin") {
+      csrfToken = crypto.randomBytes(32).toString("hex");
+    } else {
+      csrfToken = "";
+    }
+
     // Return sessionToken and username in the response
     return NextResponse.json({
       success: true,
       sessionToken,
+      csrfToken,
       username,
     });
   } catch (error) {

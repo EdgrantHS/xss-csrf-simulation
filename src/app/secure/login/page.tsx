@@ -6,6 +6,16 @@ import Cookies from 'js-cookie';
 import styles from './login.module.css';
 import axios from 'axios';
 
+// Fungsi untuk menghasilkan token CSRF acak
+const generateCSRFToken = () => {
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 32; i++) {
+    token += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return token;
+};
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -26,8 +36,16 @@ const Login = () => {
       console.log(data)
       if (data.success) {
         console.log('Session Token:', data.sessionToken); 
+        //console.log('username:', username);
         Cookies.set('session', data.sessionToken, { expires: 7, path: '/secure/', httpOnly: true, sameSite: 'Strict', secure: true });
         Cookies.set('username', username, { expires: 7, path: '/secure/' });
+        
+        // Jika username = admin, generate token CSRF dan simpan ke cookie
+        if (username === 'admin') {
+          const csrfToken = generateCSRFToken();
+          console.log('CSRF Token:', csrfToken); // Opsional, hanya untuk verifikasi
+        }
+
         alert('Login Successful');
         router.push('/secure/index'); 
       } else {
