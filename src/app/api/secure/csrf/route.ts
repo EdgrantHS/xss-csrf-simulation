@@ -4,36 +4,33 @@ import { cookies } from "next/headers";
 import crypto from 'crypto';
 
 export async function POST(request: Request) {
-        // add new session
-        try {
-            const { username } = await request.json(); // Parse the body
-            if (!username) {
-                return NextResponse.json(
-                    { error: "Username is Required" },
-                    { status: 400 }
-                );
-            }
-    
-            const client = await clientPromise;
-            const db = client.db("Kemjar");
-            const collection = db.collection("Users");
-    
-            const csrfToken = crypto.randomBytes(32).toString('hex');
-    
-            const response = await collection.updateOne(
-                { username }, // Find the user by their username
-                { $set: { csrfToken } } // Set the csrfToken field
-            );
-            console.log(response);
-            return NextResponse.json({ success: true, response });
-        } catch (error) {
-            console.error(error);
+    // add new session
+    try {
+        const { username } = await request.json(); // Parse the body
+        if (!username) {
             return NextResponse.json(
-                { error: "Failed to Create new csrf token" },
-                { status: 500 }
+                { error: "Username is Required" },
+                { status: 400 }
             );
         }
+
+        const client = await clientPromise;
+        const db = client.db("Kemjar");
+        const collection = db.collection("CSRFToken");
+
+        const csrfToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        await collection.insertOne ({ username, csrfToken });
+
+        return NextResponse.json({ success: true, csrfToken });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: "Failed to Create new session 2" },
+            { status: 500 }
+        );
     }
+}
 
 export async function GET(request: Request) {
     try {
@@ -41,7 +38,7 @@ export async function GET(request: Request) {
         const db = client.db("Kemjar");
         // Koleksi untuk sesi dan pengguna
         const sessionCollection = db.collection("Sessions");
-        const userCollection = db.collection("Users");
+        const userCollection = db.collection("CSRFToken");
 
         // Ambil sessionToken dari cookie
         const cookieStore = cookies();

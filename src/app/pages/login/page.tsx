@@ -25,11 +25,11 @@ const Login = () => {
       const data = await response.json();
       console.log(data);
       if (data.success) {
-        console.log('Session Token:', data.sessionToken);
+        //console.log('Session Token:', data.sessionToken);
 
         // Set session and username cookies after successful login
         Cookies.set('session', data.sessionToken, { expires: 7, path: '/', sameSite: 'none', secure: true });
-        Cookies.set('username', username, { expires: 7, path: '/' });
+        //Cookies.set('username', username, { expires: 7, path: '/' });
 
         /*// Send a request to generate the CSRF token
         const csrfResponse = await fetch('/api/secure/csrf', {
