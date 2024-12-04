@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './add-blog.module.css';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./add-blog.module.css";
 
 const AddBlog = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const router = useRouter();
 
   const handleAddBlog = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (title && content) {
-      const response = await fetch('/api/secure/blog', {
-        method: 'POST',
+      const response = await fetch("/api/secure/blog", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, body: content }),  
+        body: JSON.stringify({ title, body: content }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        alert('Blog added successfully!');
-        router.push('/secure/index');  
+        alert("Blog added successfully!");
+        router.push("/secure/index");
       } else {
         alert(`Error: ${data.error}`);
       }
     } else {
-      alert('Please fill in both fields');
+      alert("Please fill in both fields");
     }
   };
 
@@ -51,7 +51,9 @@ const AddBlog = () => {
           onChange={(e) => setContent(e.target.value)}
           className={styles.textarea}
         />
-        <button type="submit" className={styles.button}>Add Blog</button>
+        <button type="submit" className={styles.button}>
+          Add Blog
+        </button>
       </form>
     </div>
   );

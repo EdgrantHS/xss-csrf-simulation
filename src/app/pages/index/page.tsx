@@ -1,91 +1,92 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie'; 
-import BlogPost from '../../components/BlogPost';
-import BlogPostAdmin from '../../components/BlogPostAdmin';
-import styles from './index.module.css';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import BlogPost from "../../components/BlogPost";
+import BlogPostAdmin from "../../components/BlogPostAdmin";
+import styles from "./index.module.css";
 // import { set } from 'mongoose';
 
 const IndexPage = () => {
   const [blogs, setBlogs] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);  
-  const [error, setError] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
     const fetchSession = async () => {
-      const sessionToken = Cookies.get('session'); 
-  
+      const sessionToken = Cookies.get("session");
+
       if (!sessionToken) {
         console.log("No session token found. Redirecting to login.");
-        router.push('/pages/login');  
+        router.push("/pages/login");
         return;
       }
-  
+
       try {
-        const response = await fetch(`/api/pages/session?session=${sessionToken}`);
+        const response = await fetch(
+          `/api/pages/session?session=${sessionToken}`
+        );
         const data = await response.json();
-  
+
         // Akses sessionToken dari data yang diterima
         console.log("Data from API:", data);
-        const sessionTokenFromAPI = data.username
+        const sessionTokenFromAPI = data.username;
         setUsername(sessionTokenFromAPI);
-  
+
         console.log("Session Token from API:", sessionTokenFromAPI);
-  
+
         if (response.ok && sessionTokenFromAPI) {
-          fetchBlogs();  
+          fetchBlogs();
         } else {
           console.log(sessionTokenFromAPI);
           console.log("Invalid session. Redirecting to login.");
-          router.push('/pages/login'); 
+          router.push("/pages/login");
         }
       } catch (err) {
         console.error(err);
         console.log("Error with session verification. Redirecting to login.");
-        router.push('/pages/login'); 
+        router.push("/pages/login");
       }
     };
-  
-    fetchSession();  
+
+    fetchSession();
   }, [router]);
-  
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch('/api/pages/blog'); 
+      const response = await fetch("/api/pages/blog");
       const data = await response.json();
-      
+
       if (response.ok) {
-        setBlogs(data.blogs);  
+        setBlogs(data.blogs);
       } else {
-        setError(data.error || 'Failed to load blogs');  
+        setError(data.error || "Failed to load blogs");
       }
     } catch (error: any) {
-      setError('Failed to load blogs'); 
+      setError("Failed to load blogs");
       console.error(error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   const handleAddBlog = () => {
-    router.push('/pages/add-blog');
+    router.push("/pages/add-blog");
   };
 
   const handleLogout = () => {
     // Clear all cookies
-    Cookies.remove('session', {path: '/'});
-    Cookies.remove('session', {path: '/pages/'});
-    Cookies.remove('username', {path: '/pages/'});
-    Cookies.remove('session', {path: '/secure/'});
-    Cookies.remove('username', {path: '/secure/'});
+    Cookies.remove("session", { path: "/" });
+    Cookies.remove("session", { path: "/pages/" });
+    Cookies.remove("username", { path: "/pages/" });
+    Cookies.remove("session", { path: "/secure/" });
+    Cookies.remove("username", { path: "/secure/" });
 
     console.log("Logging out...");
-    router.push('/pages/login');  
+    router.push("/pages/login");
   };
 
   return (

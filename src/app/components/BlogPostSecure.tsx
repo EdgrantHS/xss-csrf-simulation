@@ -1,20 +1,24 @@
-'use client';
-import { useEffect, useState } from 'react';
-import styles from './BlogPost.module.css';
-import DOMPurify from 'dompurify';
+"use client";
+import { useEffect, useState } from "react";
+import styles from "./BlogPost.module.css";
+import DOMPurify from "dompurify";
 
-const BlogPostSecure = ({ title, content }: { title: string, content: string }) => {
+const BlogPostSecure = ({
+  title,
+  content,
+}: {
+  title: string;
+  content: string;
+}) => {
+  const [sanitizedContent, setSanitizedContent] = useState<string>("");
 
-  const [sanitizedContent, setSanitizedContent] = useState<string>('');
-
-  const allowedTags = ['b', 'i', 'em', 'strong'];
+  const allowedTags = ["b", "i", "em", "strong"];
 
   const sanitizeHtml = (html: string) => {
     return DOMPurify.sanitize(html, {
       ALLOWED_TAGS: allowedTags,
     });
   };
-
 
   useEffect(() => {
     setSanitizedContent(sanitizeHtml(content));
@@ -44,4 +48,3 @@ const BlogPostSecure = ({ title, content }: { title: string, content: string }) 
 };
 
 export default BlogPostSecure;
- 

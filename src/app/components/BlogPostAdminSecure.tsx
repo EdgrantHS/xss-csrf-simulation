@@ -1,7 +1,7 @@
-'use client';
-import { useEffect, useState } from 'react';
-import styles from './BlogPost.module.css';
-import DOMPurify from 'dompurify';
+"use client";
+import { useEffect, useState } from "react";
+import styles from "./BlogPost.module.css";
+import DOMPurify from "dompurify";
 
 const BlogPostAdminSecure = ({
   title,

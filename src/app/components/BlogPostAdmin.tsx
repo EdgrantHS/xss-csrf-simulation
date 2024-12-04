@@ -1,11 +1,9 @@
-'use client';
+"use client";
 // import { useEffect, useState } from 'react';
-import styles from './BlogPost.module.css';
+import styles from "./BlogPost.module.css";
 // import DOMPurify from 'dompurify';
 
-const BlogPost = ({ title, content }: { title: string, content: string }) => {
-
-
+const BlogPost = ({ title, content }: { title: string; content: string }) => {
   // const [sanitizedContent, setSanitizedContent] = useState<string>('');
 
   // const allowedTags = ['b', 'i', 'em', 'strong'];
@@ -15,7 +13,6 @@ const BlogPost = ({ title, content }: { title: string, content: string }) => {
   //     ALLOWED_TAGS: allowedTags,
   //   });
   // };
-
 
   // useEffect(() => {
   //   setSanitizedContent(sanitizeHtml(content));
