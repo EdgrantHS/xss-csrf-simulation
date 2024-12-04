@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { cookies } from "next/headers";
-import crypto from "crypto";
+// import crypto from "crypto";
 
 export async function POST(request: Request) {
-<<<<<<< HEAD
   // add new session
   try {
     const { username } = await request.json(); // Parse the body
@@ -13,66 +12,52 @@ export async function POST(request: Request) {
         { error: "Username is Required" },
         { status: 400 }
       );
-=======
-    // add new session
-    try {
-        const { username } = await request.json(); // Parse the body
-        if (!username) {
-            return NextResponse.json(
-                { error: "Username is Required" },
-                { status: 400 }
-            );
-        }
-
-        const client = await clientPromise;
-        const db = client.db("Kemjar");
-        const collection = db.collection("CSRFToken");
-
-        const csrfToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-        await collection.insertOne ({ username, csrfToken });
-
-        return NextResponse.json({ success: true, csrfToken });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            { error: "Failed to Create new session 2" },
-            { status: 500 }
-        );
->>>>>>> 987458dc6cacd7d626ecf163492cbaac3adb7938
     }
-}
 
-<<<<<<< HEAD
     const client = await clientPromise;
     const db = client.db("Kemjar");
-    const collection = db.collection("Users");
-=======
-export async function GET(request: Request) {
-    try {
-        const client = await clientPromise;
-        const db = client.db("Kemjar");
-        // Koleksi untuk sesi dan pengguna
-        const sessionCollection = db.collection("Sessions");
-        const userCollection = db.collection("CSRFToken");
->>>>>>> 987458dc6cacd7d626ecf163492cbaac3adb7938
+    const collection = db.collection("CSRFToken");
 
-    const csrfToken = crypto.randomBytes(32).toString("hex");
+    const csrfToken =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
 
-    const response = await collection.updateOne(
-      { username }, // Find the user by their username
-      { $set: { csrfToken } } // Set the csrfToken field
-    );
-    console.log(response);
-    return NextResponse.json({ success: true, response });
+    await collection.insertOne({ username, csrfToken });
+
+    return NextResponse.json({ success: true, csrfToken });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Failed to Create new csrf token" },
+      { error: "Failed to Create new session 2" },
       { status: 500 }
     );
   }
 }
+
+// export async function GET(request: Request) {
+//   try {
+//     const client = await clientPromise;
+//     const db = client.db("Kemjar");
+//     // Koleksi untuk sesi dan pengguna
+//     const sessionCollection = db.collection("Sessions");
+//     const userCollection = db.collection("CSRFToken");
+
+//     const csrfToken = crypto.randomBytes(32).toString("hex");
+
+//     const response = await collection.updateOne(
+//       { username }, // Find the user by their username
+//       { $set: { csrfToken } } // Set the csrfToken field
+//     );
+//     console.log(response);
+//     return NextResponse.json({ success: true, response });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json(
+//       { error: "Failed to Create new csrf token" },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function GET() {
   try {
